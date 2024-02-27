@@ -6,6 +6,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -21,18 +23,24 @@ public class JournalController {
 
     @GetMapping
     public List<Journal> getAllJournals() {
-        return journalServices.getAllJournals();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return journalServices.getAllJournals(username);
     }
 
-    @PostMapping("/{username}")
-    public Journal createJournal(@RequestBody Journal journal, @PathVariable String username) {
+    @PostMapping
+    public Journal createJournal(@RequestBody Journal journal) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         journalServices.createJournal(journal, username);
         return journal;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getJournalById(@PathVariable ObjectId id) {
-        Optional<Journal> journal = journalServices.getJournalById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<Journal> journal = journalServices.getJournalById(username,id);
         if(journal.isPresent()) {
             return new ResponseEntity<Journal>(journal.get(), HttpStatus.OK);
         } else {
@@ -40,8 +48,10 @@ public class JournalController {
         }
     }
 
-    @DeleteMapping("{username}/{id}")
-    public void deleteJournal(@PathVariable ObjectId id, @PathVariable String username) {
+    @DeleteMapping("/{id}")
+    public void deleteJournal(@PathVariable ObjectId id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         journalServices.deleteJournal(id, username);
     }
 }

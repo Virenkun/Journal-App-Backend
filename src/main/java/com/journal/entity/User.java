@@ -25,6 +25,7 @@ public class User {
     private String password;
     @DBRef
     private List<Journal> journalEntries;
+    private List<String> roles;
 
     public List<Journal> getJournalEntries() {
         if (journalEntries == null) {

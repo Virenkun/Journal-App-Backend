@@ -20,16 +20,15 @@ public class JournalServices {
     @Autowired
     private UserService userService;
 
-    public ArrayList<Journal> getAllJournals() {
-
-        return (ArrayList<Journal>) journalRepository.findAll();
+    public ArrayList<Journal> getAllJournals(String username) {
+        User user = userService.getUserByUsername(username);
+        return (ArrayList<Journal>) user.getJournalEntries();
     }
 
-    public Optional<Journal> getJournalById(ObjectId id) {
-
-        return journalRepository.findById(id);
+    public Optional<Journal> getJournalById(String username, ObjectId id) {
+        User user = userService.getUserByUsername(username);
+        return user.getJournalEntries().stream().filter(journal -> journal.getId().equals(id)).findFirst();
     }
-
     @Transactional
     public void createJournal(Journal journal, String username) {
         User user = userService.getUserByUsername(username);
