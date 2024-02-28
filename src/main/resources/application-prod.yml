@@ -1,0 +1,11 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://viren:virensoni@virenmongodb.3ldg7nz.mongodb.net/?retryWrites=true&w=majority&appName=VirenMongoDb
+      database: journaldb
+      auto-index-creation: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /journalapp
